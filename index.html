@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Harinish Varshan D — Model · Designer · Creator · Explorer</title>
+<meta name="description" content="Harinish Varshan D — a young creative explorer building his future through curiosity, technology, design and imagination." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#050505;
+    --bg2:#111111;
+    --text:#F5F5F0;
+    --muted:#8A8A8A;
+    --gold:#C9B48A;
+    --border: rgba(245,245,240,0.12);
+    --ease: cubic-bezier(.16,.84,.44,1);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+    cursor:none;
+  }
+  @media (max-width:900px){
+    body{cursor:auto;}
+  }
+
+  h1,h2,h3,.display{
+    font-family:'Syne',sans-serif;
+    font-weight:700;
+    letter-spacing:-0.02em;
+    line-height:0.95;
+  }
+  .serif-italic{
+    font-family:'Instrument Serif',serif;
+    font-style:italic;
+    font-weight:400;
+  }
+
+  /* --- grain overlay --- */
+  .grain{
+    position:fixed;inset:0;z-index:9998;pointer-events:none;
+    opacity:0.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  /* --- custom cursor --- */
+  .cursor{
+    position:fixed;top:0;left:0;width:14px;height:14px;
+    border:1px solid var(--text);border-radius:50%;
+    pointer-events:none;z-index:9999;
+    transform:translate(-50%,-50%);
+    transition:width .3s var(--ease),height .3s var(--ease),background .3s var(--ease),border-color .3s var(--ease);
+    mix-blend-mode:difference;
+  }
+  .cursor.grow{width:64px;height:64px;background:rgba(245,245,240,0.08);}
+  .cursor span{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:'Inter',sans-serif;font-size:9px;letter-spacing:0.1em;
+    opacity:0;transition:opacity .2s;
+  }
+  .cursor.grow span{opacity:1;}
+  @media (max-width:900px){ .cursor{display:none;} }
+
+  /* --- loader --- */
+  .loader{
+    position:fixed;inset:0;background:var(--bg);z-index:10000;
+    display:flex;align-items:center;justify-content:center;flex-direction:column;
+    transition:opacity .6s var(--ease), visibility .6s;
+  }
+  .loader.hide{opacity:0;visibility:hidden;pointer-events:none;}
+  .loader .mark{font-size:14vw;font-family:'Syne',sans-serif;font-weight:800;}
+  .loader .full{font-size:0.75rem;letter-spacing:0.3em;color:var(--muted);margin-top:12px;opacity:0;animation:fadeUp .6s var(--ease) 0.5s forwards;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+  /* --- nav --- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:500;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:28px 5vw;
+    background:linear-gradient(to bottom, rgba(5,5,5,0.85), transparent);
+  }
+  .logo{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.05em;}
+  .nav-links{display:flex;gap:32px;list-style:none;}
+  .nav-links a{
+    color:var(--muted);text-decoration:none;font-size:0.72rem;letter-spacing:0.12em;
+    text-transform:uppercase;transition:color .3s;position:relative;
+  }
+  .nav-links a:hover{color:var(--text);}
+  .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;z-index:600;}
+  .burger span{width:22px;height:1px;background:var(--text);}
+  @media (max-width:900px){
+    .nav-links{display:none;}
+    .burger{display:flex;}
+  }
+  .mobile-menu{
+    position:fixed;inset:0;background:var(--bg);z-index:550;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
+    transform:translateY(-100%);transition:transform .5s var(--ease);
+  }
+  .mobile-menu.open{transform:translateY(0);}
+  .mobile-menu a{color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:600;}
+
+  /* --- section shared --- */
+  section{position:relative;padding:140px 5vw;}
+  .label{
+    font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);
+    display:flex;align-items:center;gap:10px;margin-bottom:40px;
+  }
+  .label::before{content:'';width:24px;height:1px;background:var(--gold);}
+  .muted{color:var(--muted);}
+  .reveal{opacity:0;transform:translateY(40px);}
+
+  /* --- hero --- */
+  .hero{
+    min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    padding:0 5vw;position:relative;
+  }
+  .hero .bg-shape{
+    position:absolute;top:50%;right:5vw;width:min(38vw,420px);height:min(38vw,420px);
+    transform:translateY(-50%);border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, rgba(201,180,138,0.35), transparent 60%),
+               conic-gradient(from 180deg, #0d0d0d, #1a1a1a, #050505);
+    filter:blur(0.5px);opacity:0.9;
+    box-shadow: inset 0 0 80px rgba(201,180,138,0.08), 0 0 120px rgba(0,0,0,0.6);
+  }
+  .hero h1{font-size:clamp(3.2rem,10vw,8.5rem);}
+  .hero .role{
+    margin-top:24px;font-size:0.85rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);
+  }
+  .hero .statement{
+    margin-top:28px;max-width:480px;font-size:1.1rem;font-family:'Instrument Serif',serif;font-style:italic;color:var(--text);
+  }
+  .hero .meta{
+    position:absolute;bottom:60px;left:5vw;right:5vw;
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:0.7rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;
+  }
+  .scroll-ind{display:flex;align-items:center;gap:8px;}
+  .scroll-ind .line{width:1px;height:24px;background:var(--muted);animation:scrollLine 2s infinite;}
+  @keyframes scrollLine{0%{transform:scaleY(0);opacity:0;}50%{transform:scaleY(1);opacity:1;}100%{transform:scaleY(0);opacity:0;}}
+
+  /* --- about --- */
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
+  .about p{font-size:1.05rem;line-height:1.8;color:var(--text);margin-bottom:20px;max-width:520px;}
+  .about-words{display:flex;flex-wrap:wrap;gap:20px 40px;}
+  .about-words span{
+    font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,3.2rem);
+    color:transparent;-webkit-text-stroke:1px var(--border);
+  }
+  @media (max-width:900px){ .about-grid{grid-template-columns:1fr;} }
+
+  /* --- interests --- */
+  .interests-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);}
+  .interest-card{
+    background:var(--bg);padding:48px 36px;min-height:220px;position:relative;overflow:hidden;
+    transition:background .4s var(--ease);
+  }
+  .interest-card:hover{background:var(--bg2);}
+  .interest-card .num{font-size:0.75rem;color:var(--gold);letter-spacing:0.1em;}
+  .interest-card h3{font-size:clamp(1.4rem,2.4vw,2rem);margin-top:16px;transition:transform .4s var(--ease);}
+  .interest-card p{
+    font-size:0.85rem;color:var(--muted);margin-top:14px;max-width:320px;
+    opacity:0;transform:translateY(10px);transition:opacity .4s var(--ease),transform .4s var(--ease);
+  }
+  .interest-card:hover p{opacity:1;transform:translateY(0);}
+  .interest-card:hover h3{transform:translateX(8px);}
+  @media (max-width:900px){ .interests-grid{grid-template-columns:1fr;} }
+
+  /* --- what if --- */
+  .whatif{background:var(--bg2);}
+  .whatif-list{display:flex;flex-direction:column;gap:6px;}
+  .whatif-item{
+    font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(1.4rem,3.4vw,2.6rem);
+    padding:22px 0;border-bottom:1px solid var(--border);color:var(--muted);
+    transition:color .4s, padding-left .4s var(--ease);cursor:default;
+  }
+  .whatif-item:hover{color:var(--text);padding-left:16px;}
+  .whatif-note{margin-top:36px;font-size:0.8rem;color:var(--muted);max-width:460px;}
+
+  /* --- skills --- */
+  .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:60px;}
+  .skills-col .cat{font-size:0.7rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
+  .skills-col ul{list-style:none;}
+  .skills-col li{
+    font-size:1.05rem;padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;
+  }
+  .skills-col li small{color:var(--muted);font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;}
+  @media (max-width:900px){ .skills-grid{grid-template-columns:1fr;gap:40px;} }
+
+  /* --- languages marquee --- */
+  .marquee-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 0;}
+  .marquee{display:flex;white-space:nowrap;animation:marquee 18s linear infinite;}
+  .marquee span{
+    font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(1.8rem,4vw,3rem);
+    margin-right:60px;color:transparent;-webkit-text-stroke:1px var(--muted);
+  }
+  .marquee span.gold{-webkit-text-stroke:1px var(--gold);}
+  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* --- journey --- */
+  .journey-track{
+    display:flex;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:20px;
+    scrollbar-width:none;
+  }
+  .journey-track::-webkit-scrollbar{display:none;}
+  .journey-item{
+    min-width:280px;scroll-snap-align:start;padding:32px 32px 0 0;border-left:1px solid var(--border);
+    padding-left:32px;position:relative;
+  }
+  .journey-item .year{font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;color:var(--gold);}
+  .journey-item h4{margin-top:12px;font-size:1.1rem;}
+  .journey-item p{margin-top:8px;color:var(--muted);font-size:0.85rem;max-width:220px;}
+  .journey-hint{font-size:0.7rem;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;margin-top:16px;}
+
+  /* --- vision --- */
+  .vision-tags{display:flex;flex-wrap:wrap;gap:16px 28px;margin-bottom:40px;}
+  .vision-tags span{
+    font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(1.6rem,3.6vw,2.8rem);
+  }
+  .vision p{max-width:560px;font-size:1.05rem;color:var(--text);line-height:1.8;}
+
+  /* --- manifesto --- */
+  .manifesto{background:var(--bg2);}
+  .manifesto-item{margin-bottom:56px;}
+  .manifesto-item h2{font-size:clamp(2.4rem,7vw,5rem);}
+  .manifesto-item p{color:var(--muted);margin-top:6px;font-size:0.95rem;}
+  .manifesto-end{margin-top:60px;font-family:'Instrument Serif',serif;font-style:italic;font-size:1.4rem;color:var(--gold);}
+
+  /* --- contact --- */
+  .contact-inner{display:flex;flex-direction:column;gap:28px;}
+  .contact h2{font-size:clamp(2.6rem,7vw,5rem);margin-bottom:20px;}
+  .contact-btn{
+    display:inline-flex;align-items:center;gap:12px;margin-top:20px;
+    padding:16px 28px;border:1px solid var(--border);border-radius:100px;
+    color:var(--text);text-decoration:none;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;
+    transition:background .3s, border-color .3s;width:fit-content;
+  }
+  .contact-btn:hover{background:var(--gold);color:#050505;border-color:var(--gold);}
+  .social-row{display:flex;gap:24px;margin-top:12px;}
+  .social-row span{
+    font-size:0.75rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;
+    border-bottom:1px solid var(--border);padding-bottom:4px;
+  }
+
+  /* --- footer --- */
+  footer{padding:60px 5vw 40px;border-top:1px solid var(--border);}
+  footer .big{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.8rem,5vw,3.2rem);}
+  footer .row{
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:24px;
+    font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important;transition-duration:0.01ms !important;}
+    html{scroll-behavior:auto;}
+  }
+
+  .js .reveal{opacity:0;transform:translateY(40px);}
+  .no-gsap .reveal{opacity:1;transform:none;}
+  a:focus-visible,.burger:focus-visible,.interest-card:focus-visible{
+    outline:2px solid var(--gold);outline-offset:4px;
+  }
+  @media (max-width:900px){.interest-card p{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="cursor" id="cursor"><span id="cursorText"></span></div>
+
+<div class="loader" id="loader">
+  <div class="mark">HVD</div>
+  <div class="full">HARINISH VARSHAN</div>
+</div>
+
+<nav>
+  <div class="logo">HVD</div>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#interests">Interests</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#journey">Journey</a></li>
+    <li><a href="#vision">Vision</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="burger" id="burger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#home">Home</a>
+  <a href="#about">About</a>
+  <a href="#interests">Interests</a>
+  <a href="#skills">Skills</a>
+  <a href="#journey">Journey</a>
+  <a href="#vision">Vision</a>
+  <a href="#contact">Contact</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="bg-shape"></div>
+  <div class="label">Vellore · India</div>
+  <h1 class="reveal">HARINISH<br>VARSHAN</h1>
+  <div class="role reveal">Model / Designer / Creator / Explorer</div>
+  <p class="statement reveal">"Curious about the world. Inspired by technology. Driven by creativity."</p>
+  <div class="meta">
+    <div>Vellore, India</div>
+    <div class="scroll-ind">Scroll to explore <div class="line"></div></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="label">01 — A Little About Me</div>
+  <div class="about-grid">
+    <div class="about reveal">
+      <p>I am Harinish Varshan D, from Vellore, Tamil Nadu, currently studying at SIMATS University.</p>
+      <p>I am a curious and creative person who enjoys learning new things and exploring different fields. My interests move between modeling, design, technology, automobiles, space, physics, travel and music.</p>
+      <p>I don't want to limit myself to one identity. I want to explore, learn and discover what I can create.</p>
+    </div>
+    <div class="about-words reveal">
+      <span>CURIOUS</span>
+      <span>CREATIVE</span>
+      <span>EXPLORER</span>
+      <span>LEARNER</span>
+    </div>
+  </div>
+</section>
+
+<!-- INTERESTS -->
+<section id="interests">
+  <div class="label">02 — Things That Interest Me</div>
+  <div class="interests-grid">
+    <div class="interest-card hoverable" data-cursor="VIEW"><div class="num">01 / 08</div><h3>Modeling</h3><p>Fashion, confidence, personal presentation and visual identity.</p></div>
+    <div class="interest-card hoverable" data-cursor="VIEW"><div class="num">02 / 08</div><h3>Design</h3><p>Visual creativity, digital art and creative experimentation.</p></div>
+    <div class="interest-card hoverable" data-cursor="VIEW"><div class="num">03 / 08</div><h3>Technology</h3><p>Tech content, innovation, programming and emerging technologies.</p></div>
+    <div class="interest-card hoverable" data-cursor="VIEW"><div class="num">04 / 08</div><h3>Automobiles</h3><p>Cars, automotive design and futuristic vehicles.</p></div>
+    <div class="interest-card hoverable" data-cursor="VIEW"><div class="num">05 / 08</div><h3>Space</h3><p>The universe, astronomy and questions about what lies beyond Earth.</p></div>
+    <div class="interest-card hoverable" data-cursor="VIEW"><div class="num">06 / 08</div><h3>Physics</h3><p>Interesting physics concepts and the possibilities of the universe.</p></div>
+    <div class="interest-card hoverable" data-cursor="VIEW"><div class="num">07 / 08</div><h3>Travel</h3><p>Exploring new places, experiences and perspectives.</p></div>
+    <div class="interest-card hoverable" data-cursor="VIEW"><div class="num">08 / 08</div><h3>Music</h3><p>Listening to songs and singing.</p></div>
+  </div>
+</section>
+
+<!-- WHAT IF -->
+<section class="whatif">
+  <div class="label">03 — What If?</div>
+  <div class="whatif-list">
+    <div class="whatif-item">What if time could move differently?</div>
+    <div class="whatif-item">What if we could travel through time?</div>
+    <div class="whatif-item">What exists beyond what we can see?</div>
+    <div class="whatif-item">How will technology change the future?</div>
+    <div class="whatif-item">What will the cars of tomorrow look like?</div>
+  </div>
+  <p class="whatif-note">These are curiosities and thought experiments — not scientific claims. Just questions I like sitting with.</p>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="label">04 — Currently Learning</div>
+  <div class="skills-grid">
+    <div class="skills-col reveal">
+      <div class="cat">Technical</div>
+      <ul>
+        <li>Python <small>Basic</small></li>
+        <li>Technology Exploration <small>Ongoing</small></li>
+        <li>Digital Skills <small>Ongoing</small></li>
+      </ul>
+    </div>
+    <div class="skills-col reveal">
+      <div class="cat">Creative</div>
+      <ul>
+        <li>Design <small>Learning</small></li>
+        <li>Visual Creativity <small>Learning</small></li>
+        <li>Creative Thinking <small>Developing</small></li>
+      </ul>
+    </div>
+    <div class="skills-col reveal">
+      <div class="cat">Personal</div>
+      <ul>
+        <li>Curiosity <small>Core</small></li>
+        <li>Adaptability <small>Core</small></li>
+        <li>Learning <small>Core</small></li>
+        <li>Experimentation <small>Core</small></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- LANGUAGES -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span class="gold">ENGLISH</span><span>TAMIL</span><span class="gold">MALAYALAM</span><span>TELUGU — BASIC</span>
+    <span class="gold">ENGLISH</span><span>TAMIL</span><span class="gold">MALAYALAM</span><span>TELUGU — BASIC</span>
+  </div>
+</div>
+
+<!-- JOURNEY -->
+<section id="journey">
+  <div class="label">05 — The Journey Has Just Started</div>
+  <div class="journey-track">
+    <div class="journey-item"><div class="year">2009</div><h4>Born</h4></div>
+    <div class="journey-item"><div class="year">Today</div><h4>Student at SIMATS University</h4></div>
+    <div class="journey-item"><div class="year">Now</div><h4>Learning Python and developing new skills</h4></div>
+    <div class="journey-item"><div class="year">Next</div><h4>Explore design, modeling, technology and creative projects</h4></div>
+    <div class="journey-item"><div class="year">Future</div><h4>Build a successful career and personal identity</h4></div>
+  </div>
+  <div class="journey-hint">← scroll →</div>
+</section>
+
+<!-- VISION -->
+<section id="vision">
+  <div class="label">06 — Where I Want To Go</div>
+  <div class="vision-tags reveal">
+    <span>MODEL</span><span>DESIGNER</span><span>CREATOR</span><span>TECH ENTHUSIAST</span><span>EXPLORER</span>
+  </div>
+  <div class="vision reveal">
+    <p>My goal is to become successful while continuously learning, experimenting and building something meaningful.</p>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <div class="manifesto-item reveal"><h2>LEARN.</h2><p>Never stop discovering.</p></div>
+  <div class="manifesto-item reveal"><h2>CREATE.</h2><p>Turn ideas into something real.</p></div>
+  <div class="manifesto-item reveal"><h2>EXPLORE.</h2><p>Look beyond the obvious.</p></div>
+  <div class="manifesto-item reveal"><h2>EVOLVE.</h2><p>Become better than yesterday.</p></div>
+  <div class="manifesto-end">"My journey is only beginning."</div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="label">07 — Let's Connect</div>
+  <div class="contact-inner">
+    <h2>Harinish<br>Varshan D</h2>
+    <div class="muted">Vellore, Tamil Nadu, India</div>
+    <div class="muted">varshanharinish2@gmail.com</div>
+    <a class="contact-btn hoverable" data-cursor="CONTACT" href="mailto:varshanharinish2@gmail.com">Get in touch →</a>
+    <div class="social-row">
+      <span>Instagram — coming soon</span>
+      <span>LinkedIn — coming soon</span>
+      <span>YouTube — coming soon</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="big">HARINISH VARSHAN</div>
+  <div class="row">
+    <span>Model • Designer • Creator • Explorer</span>
+    <span>Vellore, India</span>
+    <span>varshanharinish2@gmail.com</span>
+    <span>© 2026 Harinish Varshan D</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+  } else {
+    document.documentElement.classList.add('no-gsap');
+  }
+
+  // --- Loader ---
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hide');
+      animateHero();
+    }, 1600);
+  });
+
+  function animateHero(){
+    const items = document.querySelectorAll('.hero .reveal');
+    if (reduceMotion || typeof gsap === 'undefined') {
+      items.forEach(el => { el.style.opacity='1'; el.style.transform='none'; });
+      return;
+    }
+    gsap.to(items, {opacity:1, y:0, duration:1, ease:'power3.out', stagger:0.12});
+  }
+
+  // --- Scroll reveal ---
+  document.querySelectorAll('.reveal').forEach(el => {
+    if(el.closest('.hero')) return;
+    if (reduceMotion || typeof gsap === 'undefined') {
+      el.style.opacity='1'; el.style.transform='none'; return;
+    }
+    gsap.to(el, {
+      opacity:1, y:0, duration:0.9, ease:'power3.out',
+      scrollTrigger:{ trigger: el, start:'top 85%' }
+    });
+  });
+
+  // --- Custom cursor ---
+  const cursor = document.getElementById('cursor');
+  const cursorText = document.getElementById('cursorText');
+  window.addEventListener('mousemove', e => {
+    if (typeof gsap === 'undefined') {
+      cursor.style.left=e.clientX+'px'; cursor.style.top=e.clientY+'px'; return;
+    }
+    gsap.to(cursor, {x:e.clientX, y:e.clientY, duration:0.15, ease:'power2.out'});
+  });
+  document.querySelectorAll('a, .hoverable, .interest-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.classList.add('grow');
+      cursorText.textContent = el.dataset.cursor || (el.tagName === 'A' ? '' : 'VIEW');
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.classList.remove('grow');
+      cursorText.textContent = '';
+    });
+  });
+
+  // --- Mobile menu ---
+  const burger = document.getElementById('burger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  burger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  // --- Journey: vertical wheel -> horizontal scroll ---
+  const track = document.querySelector('.journey-track');
+  track.addEventListener('wheel', (e) => {
+    if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+      e.preventDefault();
+      track.scrollLeft += e.deltaY;
+    }
+  }, {passive:false});
+</script>
+
+<div class="contact-item"><span class="contact-label">MOBILE</span><a href="tel:+918122089986">8122089986</a></div></body>
+</html>
